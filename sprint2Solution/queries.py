@@ -3,6 +3,10 @@ select_all = """
 	SELECT * FROM {};
 	"""
 
+select_minimal = """
+	SELECT * FROM {} LIMIT {};
+	"""
+
 
 create_table_statement = """
 	CREATE TABLE IF NOT EXISTS test_table (

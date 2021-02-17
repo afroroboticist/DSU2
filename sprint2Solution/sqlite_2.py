@@ -1,6 +1,7 @@
 import sqlite3
 import psycopg2
 import queries as q
+import re
 
 dbname='geexrhbt'
 user='geexrhbt'
@@ -26,6 +27,7 @@ def execute_query(curs, query, read=True):
 		results = curs.fetchall()
 		return results
 	return 0
+
 
 ###########################################################
 # Prepares query using information from PRAGMA table_info #
@@ -79,7 +81,7 @@ def prepare_table_query(table_name, table_information):
 	query_statement = "CREATE TABLE IF NOT EXISTS {}".format(table_name)
 	count = 0
 	for items in table_information:
-		value = value + items[1] + " " + items[2]
+		value = value +   re.sub(r'[^a-zA-Z0-9]', '', items[1])  + " " + items[2]
 		count += 1
 		if count < len(table_information):
 			value = value + ","
@@ -104,7 +106,7 @@ if __name__=="__main__":
 	pg_conn = psycopg2.connect(dbname=dbname,  user=user,  
 						   password=password, host=host)
 	
-	table_of_interest = 'charactercreator_character'
+	table_of_interest = 'titanic'
 	sl_conn = lite_connect(sqlite_db)
 	sl_curs = create_cursor(sl_conn)
 
@@ -129,7 +131,7 @@ if __name__=="__main__":
 	populate_postgres(sl_curs,table_of_interest, pg_curs, table_of_interest, table_information)
 	pg_conn.commit()
 
-	pg_conn.close()
+
 	sl_conn.close()
 
 	#data_returned = prepare_insert_query(table_information, table_of_interest, test_data)
